@@ -14,7 +14,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   const validatedFields = LoginSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { error: 'Check your submmission for invalid inputs' };
+    return { error: 'Check your submmission for invalid inputs.' };
   }
 
   const { email, password } = validatedFields.data;
@@ -22,7 +22,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   const existingUser = await getUserByEmail(email);
 
   if (!existingUser || !existingUser.email || !existingUser.password) {
-    return { error: 'You have provided Invalid Credentials!' };
+    return { error: 'You have provided invalid credentials.' };
   }
 
   if (!existingUser.emailVerified) {
@@ -48,7 +48,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin':
-          return { error: 'You Provided Invalid Credentials!' };
+          return { error: 'You have provided invalid credentials.' };
         default:
           return { error: 'Something went wrong. Please try again.' };
       }

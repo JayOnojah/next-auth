@@ -3,23 +3,23 @@
 import * as z from 'zod';
 import bcrypt from 'bcryptjs';
 
+import { db } from '@/lib/db';
 import { getUserByEmail } from '@/data/user';
 import { NewPasswordSchema } from '@/schemas';
 import { getPasswordResetTokenByToken } from '@/data/password-reset-token';
-import { db } from '@/lib/db';
 
 export const newPassword = async (
   values: z.infer<typeof NewPasswordSchema>,
   token?: string | null
 ) => {
   if (!token) {
-    return { error: 'Token not found for making request' };
+    return { error: 'Token not found for making this request.' };
   }
 
   const validatedFields = NewPasswordSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { error: 'Invalid Fields!' };
+    return { error: 'Your request contains invalid fields.' };
   }
 
   const { password } = validatedFields.data;
@@ -27,19 +27,19 @@ export const newPassword = async (
   const existingToken = await getPasswordResetTokenByToken(token);
 
   if (!existingToken) {
-    return { error: 'You provided an invalid token' };
+    return { error: 'You have provided an invalid token.' };
   }
 
   const hasExpired = new Date(existingToken.expires) < new Date();
 
   if (hasExpired) {
-    return { error: 'Token has expired!' };
+    return { error: 'Your current request token is expired.' };
   }
 
   const existingUser = await getUserByEmail(existingToken.email);
 
   if (!existingUser) {
-    return { error: 'Email does not exist!' };
+    return { error: 'Email for this request does not exist.' };
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -53,5 +53,5 @@ export const newPassword = async (
     where: { id: existingToken.id },
   });
 
-  return { success: 'You have successfully changed your password' };
+  return { success: 'Your password was changed successfully.' };
 };

@@ -20,7 +20,7 @@ export const newVerification = async (token: string) => {
   const existingUser = await getUserByEmail(existingToken.email);
 
   if (!existingUser) {
-    return { error: 'Your email address was not found.' };
+    return { error: 'Email for this request does not exist.' };
   }
 
   await db.user.update({
@@ -35,5 +35,5 @@ export const newVerification = async (token: string) => {
     where: { id: existingToken.id },
   });
 
-  return { success: 'Email address verified successfully!' };
+  return { success: 'You email was verified successfully.' };
 };
