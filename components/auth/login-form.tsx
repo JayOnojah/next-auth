@@ -7,8 +7,6 @@ import { useState, useTransition } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { LoginSchema } from '@/schemas';
-import { Input } from '@/components/ui/input';
 import {
   Form,
   FormItem,
@@ -17,12 +15,14 @@ import {
   FormMessage,
   FormControl,
 } from '@/components/ui/form';
+import { LoginSchema } from '@/schemas';
+import { Input } from '@/components/ui/input';
 
-import { CardWrapper } from '@/components/auth/card-wrapper';
+import { login } from '@/actions/login';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
-import { login } from '@/actions/login';
+import { CardWrapper } from '@/components/auth/card-wrapper';
 
 export const LoginForm = () => {
   const searchParams = useSearchParams();

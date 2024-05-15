@@ -40,8 +40,6 @@ export const {
           existingUser.id
         );
 
-        console.log({ twoFactorConfirmation });
-
         if (!twoFactorConfirmation) return false;
 
         // Delete two factor confirmation for next sign in
