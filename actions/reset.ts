@@ -4,6 +4,8 @@ import * as z from 'zod';
 
 import { ResetSchema } from '@/schemas';
 import { getUserByEmail } from '@/data/user';
+import { sendPasswordResetEmail } from '@/lib/mail';
+import { generatePasswordResetToken } from '@/lib/tokens';
 
 export const reset = async (values: z.infer<typeof ResetSchema>) => {
   const validatedFields = ResetSchema.safeParse(values);
@@ -20,7 +22,11 @@ export const reset = async (values: z.infer<typeof ResetSchema>) => {
     return { error: 'We could not find this email address.' };
   }
 
-  // TODO: Generate Token & Send Email
+  const passwordResetToken = await generatePasswordResetToken(email);
+  await sendPasswordResetEmail(
+    passwordResetToken.email,
+    passwordResetToken.token
+  );
 
-  return { success: 'Password reset link was sent to your email.' };
+  return { success: 'A password reset link was sent to your email.' };
 };
