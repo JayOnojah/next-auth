@@ -1,14 +1,35 @@
 "use client";
 
+import { toast } from "sonner";
+import { admin } from "@/actions/admin";
+import { UserRole } from "@prisma/client";
+import { Button } from "@/components/ui/button";
 import { RoleGate } from "@/components/auth/role-gate";
 import { FormSuccess } from "@/components/form-success";
-
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useCurrentRole } from "@/hooks/use-current-role";
-import { UserRole } from "@prisma/client";
 
 const AdminPage = () => {
-  const role = useCurrentRole();
+  const onServerActionClick = () => {
+    admin().then((data) => {
+      if (data.error) {
+        toast.error(data.error);
+      }
+
+      if (data.success) {
+        toast.success(data.success);
+      }
+    });
+  };
+
+  const onAPIRouteClick = () => {
+    fetch("/api/admin").then((response) => {
+      if (response.ok) {
+        toast.success("Allowed API Route!");
+      } else {
+        toast.error("Forbidden API Route!");
+      }
+    });
+  };
 
   return (
     <Card className="w-[600px]">
@@ -19,6 +40,15 @@ const AdminPage = () => {
         <RoleGate allowedRole={UserRole.ADMIN}>
           <FormSuccess message="You are allowed to see this content" />
         </RoleGate>
+        <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-md">
+          <p className="text-sm font-medium">Admin-Only API Route</p>
+          <Button onClick={onAPIRouteClick}>Click to Test</Button>
+        </div>
+
+        <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-md">
+          <p className="text-sm font-medium">Admin-Only Server Action</p>
+          <Button onClick={onServerActionClick}>Click to Test</Button>
+        </div>
       </CardContent>
     </Card>
   );
