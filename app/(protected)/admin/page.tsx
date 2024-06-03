@@ -24,9 +24,9 @@ const AdminPage = () => {
   const onAPIRouteClick = () => {
     fetch("/api/admin").then((response) => {
       if (response.ok) {
-        toast.success("Allowed API Route!");
+        toast.success("You are allowed to reach this API Route!");
       } else {
-        toast.error("Forbidden API Route!");
+        toast.error("You are forbidden to reach this API Route!");
       }
     });
   };
@@ -38,7 +38,7 @@ const AdminPage = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         <RoleGate allowedRole={UserRole.ADMIN}>
-          <FormSuccess message="You are allowed to see this content" />
+          <FormSuccess message="You are allowed to see all admin content here due to your priviledges." />
         </RoleGate>
         <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-md">
           <p className="text-sm font-medium">Admin-Only API Route</p>

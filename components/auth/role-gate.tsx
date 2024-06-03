@@ -14,7 +14,7 @@ export const RoleGate = ({ children, allowedRole }: RoleGateProps) => {
 
   if (role !== allowedRole) {
     return (
-      <FormError message="You do not have permission to view this content!" />
+      <FormError message="You are forbidden to see all admin content here due to your priviledges." />
     );
   }
 
