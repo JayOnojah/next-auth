@@ -20,8 +20,13 @@ import { Input } from "@/components/ui/input";
 import { settings } from "@/actions/settings";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { FormSuccess } from "@/components/form-success";
+import { FormError } from "@/components/form-error";
 
 const SettingsPage = () => {
+  const user = useCurrentUser();
+
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
 
@@ -31,7 +36,7 @@ const SettingsPage = () => {
   const form = useForm<z.infer<typeof SettingsSchema>>({
     resolver: zodResolver(SettingsSchema),
     defaultValues: {
-      name: "",
+      name: user?.name || undefined,
     },
   });
 
@@ -78,7 +83,11 @@ const SettingsPage = () => {
                 )}
               />
             </div>
-            <Button type="submit">Save</Button>
+            <FormError message={error} />
+            <FormSuccess message={success} />
+            <Button disabled={isPending} type="submit">
+              Save
+            </Button>
           </form>
         </Form>
       </CardContent>
