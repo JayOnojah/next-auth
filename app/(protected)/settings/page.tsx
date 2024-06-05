@@ -2,11 +2,9 @@
 
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useTransition, useState } from "react";
 import { useSession } from "next-auth/react";
-
-import { Switch } from "@/components/ui/switch";
+import { useTransition, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   Form,
@@ -24,15 +22,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { UserRole } from "@prisma/client";
 import { SettingsSchema } from "@/schemas";
 import { Input } from "@/components/ui/input";
 import { settings } from "@/actions/settings";
+import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { useCurrentUser } from "@/hooks/use-current-user";
-import { FormSuccess } from "@/components/form-success";
 import { FormError } from "@/components/form-error";
-import { UserRole } from "@prisma/client";
+import { FormSuccess } from "@/components/form-success";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 const SettingsPage = () => {
   const user = useCurrentUser();
