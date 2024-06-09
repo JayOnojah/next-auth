@@ -1,27 +1,30 @@
-'use server';
+"use server";
 
-import * as z from 'zod';
-import { AuthError } from 'next-auth';
+import * as z from "zod";
+import { AuthError } from "next-auth";
 
-import { db } from '@/lib/db';
-import { signIn } from '@/auth';
-import { LoginSchema } from '@/schemas';
-import { getUserByEmail } from '@/data/user';
-import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
-import { getTwoFactorTokenByEmail } from '@/data/two-factor-token';
+import { db } from "@/lib/db";
+import { signIn } from "@/auth";
+import { LoginSchema } from "@/schemas";
+import { getUserByEmail } from "@/data/user";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
 
 import {
   generateVerificationToken,
   generateTwoFactorToken,
-} from '@/lib/tokens';
-import { sendVerificationEmail, sendTwoFactorTokenEmail } from '@/lib/mail';
-import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation';
+} from "@/lib/tokens";
+import { sendVerificationEmail, sendTwoFactorTokenEmail } from "@/lib/mail";
+import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
 
-export const login = async (values: z.infer<typeof LoginSchema>) => {
+export const login = async (
+  values: z.infer<typeof LoginSchema>,
+  callbackUrl?: string | null
+) => {
   const validatedFields = LoginSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { error: 'Check your submmission for invalid inputs.' };
+    return { error: "Check your submmission for invalid inputs." };
   }
 
   const { email, password, code } = validatedFields.data;
@@ -29,7 +32,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   const existingUser = await getUserByEmail(email);
 
   if (!existingUser || !existingUser.email || !existingUser.password) {
-    return { error: 'You have provided invalid credentials.' };
+    return { error: "You have provided invalid credentials." };
   }
 
   if (!existingUser.emailVerified) {
@@ -42,7 +45,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
       verificationToken.token
     );
 
-    return { success: 'A confirmation link was sent to your email.' };
+    return { success: "A confirmation link was sent to your email." };
   }
 
   if (existingUser.isTwoFactorEnabled && existingUser.email) {
@@ -50,17 +53,17 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
       const twoFactorToken = await getTwoFactorTokenByEmail(existingUser.email);
 
       if (!twoFactorToken) {
-        return { error: 'You have submitted an invalid code.' };
+        return { error: "You have submitted an invalid code." };
       }
 
       if (twoFactorToken.token !== code) {
-        return { error: 'You have submitted an invalid code.' };
+        return { error: "You have submitted an invalid code." };
       }
 
       const hasExpired = new Date(twoFactorToken.expires) < new Date();
 
       if (hasExpired) {
-        return { error: 'Your 2FA Code is already expired.' };
+        return { error: "Your 2FA Code is already expired." };
       }
 
       await db.twoFactorToken.delete({
@@ -91,18 +94,18 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   }
 
   try {
-    await signIn('credentials', {
+    await signIn("credentials", {
       email,
       password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
+      redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
     });
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
-        case 'CredentialsSignin':
-          return { error: 'You have provided invalid credentials.' };
+        case "CredentialsSignin":
+          return { error: "You have provided invalid credentials." };
         default:
-          return { error: 'Something went wrong. Please try again.' };
+          return { error: "Something went wrong. Please try again." };
       }
     }
 
