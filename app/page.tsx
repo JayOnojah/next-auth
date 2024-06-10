@@ -21,7 +21,7 @@ export default function Home() {
           🔐
         </h1>
         <p className="text-white text-lg">
-          A simple authentication service by Jeremiah
+          A Complete NextJS Authentication Service by Jeremiah.
         </p>
         <div>
           <LoginButton mode="modal" asChild>
