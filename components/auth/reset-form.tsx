@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import * as z from 'zod';
-import { useForm } from 'react-hook-form';
-import { useState, useTransition } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from "zod";
+import { useForm } from "react-hook-form";
+import { useState, useTransition } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import { ResetSchema } from '@/schemas';
-import { Input } from '@/components/ui/input';
+import { ResetSchema } from "@/schemas";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormItem,
@@ -14,29 +14,29 @@ import {
   FormField,
   FormMessage,
   FormControl,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 
-import { CardWrapper } from '@/components/auth/card-wrapper';
-import { Button } from '@/components/ui/button';
-import { FormError } from '@/components/form-error';
-import { FormSuccess } from '@/components/form-success';
-import { reset } from '@/actions/reset';
+import { CardWrapper } from "@/components/auth/card-wrapper";
+import { Button } from "@/components/ui/button";
+import { FormError } from "@/components/form-error";
+import { FormSuccess } from "@/components/form-success";
+import { reset } from "@/actions/reset";
 
 export const ResetForm = () => {
-  const [error, setError] = useState<string | undefined>('');
-  const [success, setSuccess] = useState<string | undefined>('');
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof ResetSchema>>({
     resolver: zodResolver(ResetSchema),
     defaultValues: {
-      email: '',
+      email: "",
     },
   });
 
   const onSubmit = (values: z.infer<typeof ResetSchema>) => {
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     console.log(values);
 
@@ -52,8 +52,14 @@ export const ResetForm = () => {
     <CardWrapper
       headerLabel="Forgot your Password?"
       backButtonLabel="Back to Login"
-      backButtonHref="/auth/login"
-    >
+      backButtonHref="/auth/login">
+      {error || success ? (
+        <div className="flex items-center w-full justify-center mb-5">
+          <FormError message={error} />
+          <FormSuccess message={success} />
+        </div>
+      ) : null}
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
@@ -76,8 +82,7 @@ export const ResetForm = () => {
               )}
             />
           </div>
-          <FormError message={error} />
-          <FormSuccess message={success} />
+
           <Button type="submit" disabled={isPending} className="w-full">
             Send Password Reset Mail
           </Button>

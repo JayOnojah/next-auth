@@ -72,10 +72,17 @@ export const LoginForm = () => {
 
   return (
     <CardWrapper
+      showSocial
       headerLabel="Welcome Back! Please Login."
       backButtonLabel="Don't have an account? Create Account"
-      backButtonHref="/auth/register"
-      showSocial>
+      backButtonHref="/auth/register">
+      {error || success || urlError ? (
+        <div className="flex items-center w-full justify-center mb-5">
+          <FormError message={error || urlError} />
+          <FormSuccess message={success} />
+        </div>
+      ) : null}
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
@@ -146,8 +153,6 @@ export const LoginForm = () => {
               </>
             )}
           </div>
-          <FormError message={error || urlError} />
-          <FormSuccess message={success} />
           <Button type="submit" disabled={isPending} className="w-full">
             {showTwoFactor ? "Confirm" : "Login"}
           </Button>
