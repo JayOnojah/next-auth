@@ -20,7 +20,7 @@ export default function Home() {
           )}>
           🔐
         </h1>
-        <p className="text-white text-lg">
+        <p className="text-white text-lg px-10 lg:px-5">
           A Complete NextJS Authentication Service by Jeremiah.
         </p>
         <div>
