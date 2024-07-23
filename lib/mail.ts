@@ -1,8 +1,8 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-const domain = process.env.NEXT_PUBLIC_APP_URL;
 const sender = "no-reply@mail.onojah.com";
+const domain = process.env.NEXT_PUBLIC_APP_URL;
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
   await resend.emails.send({
