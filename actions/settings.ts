@@ -4,11 +4,11 @@ import * as z from "zod";
 import bcrypt from "bcryptjs";
 
 import { db } from "@/lib/db";
+import { currentUser } from "@/lib/auth";
 import { SettingsSchema } from "@/schemas";
+import { sendVerificationEmail } from "@/lib/mail";
 import { generateVerificationToken } from "@/lib/tokens";
 import { getUserById, getUserByEmail } from "@/data/user";
-import { currentUser } from "@/lib/auth";
-import { sendVerificationEmail } from "@/lib/mail";
 
 export const settings = async (values: z.infer<typeof SettingsSchema>) => {
   const user = await currentUser();
